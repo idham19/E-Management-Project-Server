@@ -23,6 +23,4 @@ public class UserService {
         jdbcTemplate.execute("ALTER TABLE users AUTO_INCREMENT = 1;");
         jdbcTemplate.execute("SET SQL_SAFE_UPDATES = 1;");
     }
-
-
 }
