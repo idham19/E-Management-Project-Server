@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,29 +18,26 @@ import java.util.Optional;
 @RequestMapping("/api/auth")
 public class UserController {
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
-
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody User user) {
+        Optional<User> foundUser = userRepository.findByEmail(user.getEmail());
+        if (foundUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exist");
+        }
+        userService.postUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(User user){
+    public ResponseEntity<?> login(@RequestBody User user) {
         Optional<User> foundUser = userRepository.findByEmail(user.getEmail());
-        if(foundUser.isPresent() && foundUser.get().getPassword().equals(user.getPassword())){
+        if (foundUser.isPresent() && foundUser.get().getPassword().equals(user.getPassword())) {
             return ResponseEntity.ok(Collections.singletonMap("message", "Login successful"));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
-
-     @PostMapping("/register")
-    public ResponseEntity<?> register(User user){
-       Optional<User> foundUser = userRepository.findByEmail(user.getEmail());
-        if(foundUser.isPresent()){
-            return  ResponseEntity.status(HttpStatus.CONFLICT).body("User already exist");
-        }
-        userService.postUser(user);
-        return  ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
-     }
-
 }

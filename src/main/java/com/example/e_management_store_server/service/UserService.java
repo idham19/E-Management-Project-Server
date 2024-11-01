@@ -12,12 +12,10 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    public User postUser(User user) {
+    public User postUser(User user){
         return userRepository.save(user);
     }
-
-    public void cleanUpUserTable() {
+    public  void cleanUpUserTable(){
         jdbcTemplate.execute("SET SQL_SAFE_UPDATES = 0;");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("ALTER TABLE users AUTO_INCREMENT = 1;");
