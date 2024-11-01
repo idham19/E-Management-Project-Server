@@ -11,6 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 @SpringBootApplication
 public class EManagementStoreServerApplication implements CommandLineRunner {
@@ -27,24 +28,43 @@ public class EManagementStoreServerApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         try {
-            //clean tables before injecting data
+            // Clean tables before injecting data
             deviceService.cleanUpDeviceTable();
             cartService.cleanUpCartTable();
             userService.cleanUpUserTable();
 
-            // Load JSON file from classpath (assets folder in resources)
-            File deviceJsonFile = new ClassPathResource("assets/devices.json").getFile();
-            File cartJsonFile = new ClassPathResource("assets/carts.json").getFile();
+            // Load JSON files from classpath (assets folder in resources)
+            ClassPathResource deviceResource = new ClassPathResource("assets/devices.json");
+            ClassPathResource cartResource = new ClassPathResource("assets/carts.json");
 
-            // Call the service to import the JSON data
-            deviceService.importJsonData(deviceJsonFile.getAbsolutePath());
-            cartService.importJsonData(cartJsonFile.getAbsolutePath());
-            System.out.println("Data imported from JSON file in assets folder.");
+            // Check if the resources exist
+            if (!deviceResource.exists()) {
+                System.out.println("Device JSON file not found.");
+                return;
+            }
+            if (!cartResource.exists()) {
+                System.out.println("Cart JSON file not found.");
+                return;
+            }
 
-        } catch (IOException e) {
-            System.out.println("Failed to load JSON file from assets folder: " + e.getMessage());
+            // Read the JSON data
+            try (InputStream deviceStream = deviceResource.getInputStream()) {
+                deviceService.importJsonData(deviceStream);
+            } catch (IOException e) {
+                System.out.println("Error reading device JSON: " + e.getMessage());
+            }
+
+            try (InputStream cartStream = cartResource.getInputStream()) {
+                cartService.importJsonData(cartStream);
+            } catch (IOException e) {
+                System.out.println("Error reading cart JSON: " + e.getMessage());
+            }
+
+            System.out.println("Data imported from JSON files successfully.");
+        } catch (Exception e) {
+            System.out.println("An error occurred during the data import process: " + e.getMessage());
         }
     }
 }

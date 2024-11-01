@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,10 +23,9 @@ public class DeviceService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void importJsonData(String filePath) throws IOException {
+    public void importJsonData(InputStream inputStream) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        List<Device> devices = objectMapper.readValue(new File(filePath), new TypeReference<List<Device>>() {
-        });
+        List<Device> devices = objectMapper.readValue(inputStream, new TypeReference<List<Device>>() {});
         for (Device device : devices) {
             deviceRepository.save(device);
         }

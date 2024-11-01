@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,10 +23,9 @@ public class CartService {
     private JdbcTemplate jdbcTemplate;
 
 
-    public void importJsonData(String filePath) throws IOException {
+    public void importJsonData(InputStream inputStream) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        List<Cart> carts = objectMapper.readValue(new File(filePath), new TypeReference<List<Cart>>() {
-        });
+        List<Cart> carts = objectMapper.readValue(inputStream, new TypeReference<List<Cart>>() {});
         for (Cart cart : carts) {
             cartRepository.save(cart);
         }
