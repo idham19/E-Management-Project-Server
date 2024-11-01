@@ -31,9 +31,9 @@ public class EManagementStoreServerApplication implements CommandLineRunner {
     public void run(String... args) {
         try {
             // Clean tables before injecting data
-            deviceService.cleanUpDeviceTable();
-            cartService.cleanUpCartTable();
-            userService.cleanUpUserTable();
+//            deviceService.cleanUpDeviceTable();
+//            cartService.cleanUpCartTable();
+//            userService.cleanUpUserTable();
 
             // Load JSON files from classpath (assets folder in resources)
             ClassPathResource deviceResource = new ClassPathResource("assets/devices.json");
