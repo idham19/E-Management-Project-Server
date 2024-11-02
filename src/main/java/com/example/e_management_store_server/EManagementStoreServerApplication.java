@@ -9,7 +9,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -36,8 +35,8 @@ public class EManagementStoreServerApplication implements CommandLineRunner {
 //            userService.cleanUpUserTable();
 
             // Load JSON files from classpath (assets folder in resources)
-            ClassPathResource deviceResource = new ClassPathResource("assets/devices.json");
-            ClassPathResource cartResource = new ClassPathResource("assets/carts.json");
+            ClassPathResource deviceResource = new ClassPathResource("devices.json");
+            ClassPathResource cartResource = new ClassPathResource("carts.json");
 
             // Check if the resources exist
             if (!deviceResource.exists()) {
